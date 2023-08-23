@@ -71,3 +71,51 @@ export const updateState = async (req, res) => {
     });
   }
 };
+
+// get state
+export const getState = async (req, res) => {
+  try {
+    const state = await State.find().select("-__v");
+    res.status(200).json({
+      status: "success",
+      message: "States retrieved successfully",
+      data: state,
+    });
+  } catch (error) {
+    res.status(500).json({
+      status: "Failed",
+      message: error.message,
+    });
+  }
+};
+
+// delete state
+export const deleteState = async (req, res) => {
+  const { id } = req.params;
+  try {
+    if(!id){
+      return res.status(400).json({
+        status:"Failed",
+        message: "Id is required",
+      })
+    }
+    const deletedState = await State.findByIdAndDelete(id)
+    if(deletedState){
+      return res.status(200).json({
+        status:"Success",
+        message:"State deleted successfully",
+        data: deletedState
+      })
+    }else{
+      return res.status(404).json({
+        status:"Failed",
+        message: "State not found",
+      })
+    }
+  } catch (error) {
+    return res.status(500).json({
+      status:"Failed",
+      message: error.message,
+    })
+  }
+};

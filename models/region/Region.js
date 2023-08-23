@@ -5,10 +5,14 @@ const regionSchema = new mongoose.Schema({
         type:String,
         required:true,
     },
-    state:{
+    state_id:{
         type:mongoose.Schema.Types.ObjectId,
         ref:"State",
         required: true,    
+    },
+    state:{
+        type: String,
+        required:true,
     }
 })
 
