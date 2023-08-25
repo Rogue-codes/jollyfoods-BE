@@ -6,6 +6,7 @@ import mongoose from "mongoose";
 import stateRoute from "./routes/stateRoute/index.js";
 import regionRoute from "./routes/regionRoute/index.js";
 import locationRoute from "./routes/location/index.js";
+import userRoute from "./routes/user/userRoute.js";
 
 const app = express();
 
@@ -27,6 +28,7 @@ app.get('/', (req, res)=>{
 app.use('/api/v1/kpangbafoods', stateRoute)
 app.use('/api/v1/kpangbafoods', regionRoute)
 app.use('/api/v1/kpangbafoods', locationRoute)
+app.use('/api/v1/kpangbafoods', userRoute)
 
 const URI = process.env.connection_URI
 
