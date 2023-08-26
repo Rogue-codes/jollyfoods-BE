@@ -3,10 +3,11 @@ import { genToken } from "../../config/genToken.js";
 import OTP from "../../models/otp/OtpModel.js";
 import sgMail from "@sendgrid/mail";
 
+
 import {
-  genMailTemplate,
   generateOTP,
-  sendEmail,
+  sendMail,
+  // sendVerificationEmail,
 } from "../../utils/genOtpCode.js";
 export const createUser = async (req, res) => {
   const { name, email, phoneNumber, password, confirmPassword } = req.body;
@@ -93,22 +94,9 @@ export const createUser = async (req, res) => {
       
           await otp.save();
           // send email
-          sgMail.setApiKey(process.env.SENDGRID_API_KEY)
-          const msg = {
-            to: newUser.email, // Change to your recipient
-            from: 'daniel.osuji@hotmail.com', // Change to your verified sender
-            subject: 'Verify Your Account',
-            text: 'and easy to do anywhere, even with Node.js',
-            html: genMailTemplate(digits,newUser.email),
-          }
-          sgMail
-            .send(msg)
-            .then(() => {
-              console.log(`Email sent to ${newUser.email}`)
-            })
-            .catch((error) => {
-              console.error(error)
-            })
+          // sendVerificationEmail(newUser.email,otp.otp,newUser.name)
+
+          sendMail(newUser.email, digits, newUser.name)
 
         // genToken
         const token = genToken(newUser._id);

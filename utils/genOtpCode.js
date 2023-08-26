@@ -1,4 +1,3 @@
-import nodemailer from "nodemailer";
 import sgMail from "@sendgrid/mail";
 export const generateOTP = () => {
   let otp = "";
@@ -7,18 +6,39 @@ export const generateOTP = () => {
   }
   return otp;
 };
+// sgMail.setApiKey(process.env.SENDGRID_API_KEY);
 
-export const sendEmail = async () => {
-  sgMail.setApiKey(process.env.SENDGRID_APIKEY)
+// export const sendVerificationEmail = (toEmail, user, token) => {
+//   const msg = {
+//     to: toEmail,
+//     from: "adaraojimba@cloudsa.com",
+//     subject: "Verify Your Account",
+//     html: `<p>Hello ${user}, please use this token to verify your account:</p><br><button style="font-family: sans-serif; font-size: 14px; vertical-align: top; border-radius: 5px; text-align: center; background-color: #3498db;" valign="top" align="center" bgcolor="#3498db"><p style="border: solid 1px #3498db; border-radius: 5px; box-sizing: border-box; cursor: pointer; display: inline-block; font-size: 14px; font-weight: bold; margin: 0; padding: 12px 25px; text-decoration: none; text-transform: capitalize; background-color: #3498db; border-color: #3498db; color: #ffffff;">${token}</p></button>`,
+//   };
 
+//   sgMail
+//     .send(msg)
+//     .then(() => console.log("Email sent"))
+//     .catch((error) => console.error(error));
+// };
+
+export const sendMail = (email,code,name) =>{
+  sgMail.setApiKey(process.env.SENDGRID_API_KEY)
+  const msg = {
+    to: email, // Change to your recipient
+    from: 'adaraojimba@cloudsa-africa.com', // Change to your verified sender
+    subject: 'Email Verification',
+    text: 'and easy to do anywhere, even with Node.js',
+    html: `<p>Hello ${name}, please use this token to verify your account:</p><br><button style="font-family: sans-serif; font-size: 14px; vertical-align: top; border-radius: 5px; text-align: center; background-color: #3498db;" valign="top" align="center" bgcolor="#3498db"><p style="border: solid 1px #3498db; border-radius: 5px; box-sizing: border-box; cursor: pointer; display: inline-block; font-size: 14px; font-weight: bold; margin: 0; padding: 12px 25px; text-decoration: none; text-transform: capitalize; background-color: #3498db; border-color: #3498db; color: #ffffff;">${code}</p></button>`,
+}
   sgMail
-  .send(msg)
-  .then(() => {
-    console.log('Email sent')
-  })
-  .catch((error) => {
-    console.error(error)
-  })
+    .send(msg)
+    .then(() => {
+      console.log('Email sent')
+    })
+    .catch((error) => {
+      console.error(error)
+    })
 }
 
 export const genMailTemplate = (otp, email) => {
