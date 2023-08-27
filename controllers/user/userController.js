@@ -1,8 +1,6 @@
 import User from "../../models/user/UserModel.js";
 import { genToken } from "../../config/genToken.js";
 import OTP from "../../models/otp/OtpModel.js";
-import sgMail from "@sendgrid/mail";
-
 
 import {
   generateOTP,
@@ -10,12 +8,13 @@ import {
   // sendVerificationEmail,
 } from "../../utils/genOtpCode.js";
 export const createUser = async (req, res) => {
-  const { name, email, phoneNumber, password, confirmPassword } = req.body;
+  const { name, email, phoneNumber, password, confirmPassword, healthcareServiceProvider } = req.body;
   const trimmed_name = name.trim();
   const trimmed_email = email.trim();
   const trimmed_phoneNumber = phoneNumber.trim();
   const trimmed_password = password.trim();
   const trimmed_confirmPassword = confirmPassword.trim();
+  const trimmed_healthcareServiceProvider = healthcareServiceProvider.trim();
 
   try {
     if (
@@ -23,7 +22,8 @@ export const createUser = async (req, res) => {
       !trimmed_email ||
       !trimmed_phoneNumber ||
       !trimmed_password ||
-      !trimmed_confirmPassword
+      !trimmed_confirmPassword ||
+      !trimmed_healthcareServiceProvider
     ) {
       return res.status(400).json({
         status: "Failed",
@@ -79,24 +79,25 @@ export const createUser = async (req, res) => {
         });
       } else {
         const newUser = await User.create({
-          name,
-          email,
-          phoneNumber,
-          password,
+          name: trimmed_name,
+          email: trimmed_email,
+          phoneNumber: trimmed_phoneNumber,
+          password: trimmed_password,
+          healthcareServiceProvider: trimmed_healthcareServiceProvider
         });
 
         // generate OTP
-        const digits = generateOTP()
+        const digits = generateOTP();
         const otp = new OTP({
-            _userId: newUser._id,
-            otp: digits, 
-          });
-      
-          await otp.save();
-          // send email
-          // sendVerificationEmail(newUser.email,otp.otp,newUser.name)
+          _userId: newUser._id,
+          otp: digits,
+        });
 
-          sendMail(newUser.email, digits, newUser.name)
+        await otp.save();
+        // send email
+        // sendVerificationEmail(newUser.email,otp.otp,newUser.name)
+
+        sendMail(newUser.email, digits, newUser.name);
 
         // genToken
         const token = genToken(newUser._id);
@@ -107,6 +108,8 @@ export const createUser = async (req, res) => {
             name: newUser.name,
             email: newUser.email,
             phoneNumber: newUser.phoneNumber,
+            user_id: newUser._id,
+            isVerified: newUser.isVerified,
           },
           token: token,
         });
@@ -122,23 +125,23 @@ export const createUser = async (req, res) => {
 
 export const verifyEmail = async (req, res) => {
   // destruction request payload
-  const { otp } = req.body;
+  const { user_id, otp } = req.body;
 
   try {
     // check if all credentials exist
-    if (!otp) {
+    if (!otp || !user_id) {
       return res.status(400).json({
         status: "Failed",
-        message: "OTP is required",
+        message: "OTP and user ID is required",
       });
     }
     // get token
-    const token = await OTP.findOne({ otp });
+    const token = await OTP.findOne({ _userId: user_id });
     // token not found
     if (!token) {
       return res.status(400).json({
         status: "Failed",
-        message: "token not found ",
+        message: "token has expired",
       });
     }
     const user = await User.findById(token._userId);
@@ -152,12 +155,12 @@ export const verifyEmail = async (req, res) => {
     if (user.isVerified) {
       return res.status(400).json({
         status: "Failed",
-        message: "Admin already verified",
+        message: "user already verified",
       });
     }
 
     // matched client OTP with the one in our db
-    const isMatched = OTP.matchOTP(otp);
+    const isMatched = await token.matchOTP(otp);
     if (!isMatched) {
       return res.status(400).json({
         status: "Failed",
@@ -169,14 +172,7 @@ export const verifyEmail = async (req, res) => {
     await OTP.findByIdAndDelete(token._id);
     await user.save();
 
-    //   await (
-    //     await sendEmail()
-    //   ).sendMail({
-    //     from: "Tes-HMS@gmail.com",
-    //     to: validAdmin.email,
-    //     subject: `Welcome  ${validAdmin.username}`,
-    //     html: genSuccessMailTemplate(validAdmin.email),
-    //   });
+    /* todo: delete current otp related to a user, when user tries to request for a new one */
 
     res.status(200).json({
       status: "success",
@@ -212,7 +208,12 @@ export const userLogin = async (req, res) => {
     }
     // check if email is valid
     const user = await User.findOne({ email: trimmed_email });
-    if (user && (await user.matchPassword(trimmed_password))) {
+    // check if user exist, if they' re verified and if their password match.
+    if (
+      user &&
+      user.isVerified &&
+      (await user.matchPassword(trimmed_password))
+    ) {
       // genToken
       const token = genToken(user._id);
       res.status(200).json({
@@ -222,8 +223,16 @@ export const userLogin = async (req, res) => {
           name: user.name,
           email: user.email,
           phoneNumber: user.phoneNumber,
+          id: user._userId,
+          isVerified: user.isVerified,
         },
         token,
+      });
+    } else if (!user.isVerified) {
+      return res.status(403).send({
+        status: "Failed",
+        message:
+          "user account not verified. Please verify your account and try again",
       });
     } else {
       res.status(400).json({
