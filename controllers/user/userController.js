@@ -177,7 +177,7 @@ export const verifyEmail = async (req, res) => {
     await user.save();
 
     // genToken
-    const jwt_token = genToken(newUser._id);
+    const jwt_token = genToken(user._id);
     res.status(200).json({
       status: "success",
       message: "user verified successfully",
