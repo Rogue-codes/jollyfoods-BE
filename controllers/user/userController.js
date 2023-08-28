@@ -48,7 +48,7 @@ export const createUser = async (req, res) => {
       return res.status(400).json({
         status: "Failed",
         message:
-          "Invalid password format; Password be at least 8 characters long, with atleast one uppercase,one lowercase and one special caharacter.",
+          "Invalid password format; Password must be at least 8 characters long, with one uppercase, one lowercase and a special character.",
       });
     } else if (trimmed_password !== trimmed_confirmPassword) {
       return res.status(400).json({
