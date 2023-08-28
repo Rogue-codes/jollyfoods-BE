@@ -8,7 +8,14 @@ import {
   // sendVerificationEmail,
 } from "../../utils/genOtpCode.js";
 export const createUser = async (req, res) => {
-  const { name, email, phoneNumber, password, confirmPassword, healthcareServiceProvider } = req.body;
+  const {
+    name,
+    email,
+    phoneNumber,
+    password,
+    confirmPassword,
+    healthcareServiceProvider,
+  } = req.body;
   const trimmed_name = name.trim();
   const trimmed_email = email.trim();
   const trimmed_phoneNumber = phoneNumber.trim();
@@ -83,7 +90,7 @@ export const createUser = async (req, res) => {
           email: trimmed_email,
           phoneNumber: trimmed_phoneNumber,
           password: trimmed_password,
-          healthcareServiceProvider: trimmed_healthcareServiceProvider
+          healthcareServiceProvider: trimmed_healthcareServiceProvider,
         });
 
         // generate OTP
@@ -99,8 +106,6 @@ export const createUser = async (req, res) => {
 
         sendMail(newUser.email, digits, newUser.name);
 
-        // genToken
-        const token = genToken(newUser._id);
         res.status(200).json({
           status: "success",
           message: "user successfully registered",
@@ -111,7 +116,6 @@ export const createUser = async (req, res) => {
             user_id: newUser._id,
             isVerified: newUser.isVerified,
           },
-          token: token,
         });
       }
     }
@@ -172,8 +176,8 @@ export const verifyEmail = async (req, res) => {
     await OTP.findByIdAndDelete(token._id);
     await user.save();
 
-    /* todo: delete current otp related to a user, when user tries to request for a new one */
-
+    // genToken
+    const jwt_token = genToken(newUser._id);
     res.status(200).json({
       status: "success",
       message: "user verified successfully",
@@ -183,7 +187,9 @@ export const verifyEmail = async (req, res) => {
         phoneNumber: user.phoneNumber,
         id: user._id,
         isVerified: user.isVerified,
+        hmo: user.healthcareServiceProvider
       },
+      access_token: jwt_token,
     });
   } catch (error) {
     res.status(500).json({
@@ -266,3 +272,52 @@ export const getUserProfile = async (req, res) => {
     }
   } catch (error) {}
 };
+
+export const resendToken = async(req, res) => {
+  const {user_id} = req.body;
+  try {
+    if(!user_id){
+      return res.status(400).json({
+        status:"Failed",
+        message:"User_id is required"
+      })
+    }
+
+    const existOTP = await OTP.findOne({_userId: user_id})
+    if (existOTP){
+      await OTP.findByIdAndDelete(existOTP._id)
+    }
+
+    const digits = generateOTP();
+        const otp = new OTP({
+          _userId: user_id,
+          otp: digits,
+        });
+
+        await otp.save();
+        // send email
+        // sendVerificationEmail(newUser.email,otp.otp,newUser.name)
+
+        const newUser = await User.findById(user_id)
+
+        if (!newUser){
+          return res.status(404).json({
+            status: "Failed",
+            message: "User not found"
+          })
+        }
+
+        sendMail(newUser.email, digits, newUser.name);
+        
+        res.status(200).json({
+          status:"Success",
+          message:"OTP Generated. Please check your email address"
+        })
+
+  } catch (error) {
+    res.status(500).json({
+      status:"Failed",
+      message:error.message
+    })
+  }
+}
