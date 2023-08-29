@@ -221,7 +221,7 @@ export const userLogin = async (req, res) => {
       (await user.matchPassword(trimmed_password))
     ) {
       // genToken
-      const token = genToken(user._id);
+      const access_token = genToken(user._id);
       res.status(200).json({
         status: "success",
         message: "Login successful",
@@ -232,7 +232,7 @@ export const userLogin = async (req, res) => {
           id: user._userId,
           isVerified: user.isVerified,
         },
-        token,
+        access_token,
       });
     } else if (!user.isVerified) {
       return res.status(403).send({
@@ -321,3 +321,5 @@ export const resendToken = async(req, res) => {
     })
   }
 }
+
+// todos; forgot password, reset password, update profile.
