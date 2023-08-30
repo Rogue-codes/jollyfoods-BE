@@ -6,8 +6,8 @@ const resturantRoute = express.Router()
 
 resturantRoute.post('/resturant/create', authMiddleware ,createResturant)
 resturantRoute.put('/resturant/edit', authMiddleware , editResturant)
-resturantRoute.get('/resturant/all', authMiddleware , getAllResturant)
-resturantRoute.get('/resturant/:id', authMiddleware , getResturantByID)
+resturantRoute.get('/resturant/all' , getAllResturant)
+resturantRoute.get('/resturant/:id' , getResturantByID)
 resturantRoute.delete('/resturant/delete/:id', authMiddleware , deleteResturant)
 
 export default resturantRoute
