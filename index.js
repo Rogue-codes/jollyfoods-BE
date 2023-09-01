@@ -8,6 +8,7 @@ import regionRoute from "./routes/regionRoute/index.js";
 import locationRoute from "./routes/location/index.js";
 import userRoute from "./routes/user/userRoute.js";
 import resturantRoute from './routes/resturantRoute/index.js'
+import reservationRoute from "./routes/reservationRoute/index.js";
 
 const app = express();
 
@@ -31,6 +32,7 @@ app.use('/api/v1/kpangbafoods', regionRoute)
 app.use('/api/v1/kpangbafoods', locationRoute)
 app.use('/api/v1/kpangbafoods', userRoute)
 app.use('/api/v1/kpangbafoods', resturantRoute)
+app.use('/api/v1/kpangbafoods', reservationRoute)
 
 const URI = process.env.connection_URI
 
