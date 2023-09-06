@@ -37,7 +37,11 @@ const resturantSchema = new mongoose.Schema({
     type: String,
     default: "6:00PM",
   },
-  price_per_person: {
+  price_per_adult: {
+    type: Number,
+    required: true,
+  },
+  price_per_child: {
     type: Number,
     required: true,
   },

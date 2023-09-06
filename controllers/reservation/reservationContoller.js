@@ -61,19 +61,6 @@ export const createReservation = async (req, res) => {
       });
     }
 
-    // check if reservation already exists to prevent multiple reservations.
-
-    const alreadyExistingReservation = await Reservation.findOne({
-      customer_id,
-    });
-
-    if (alreadyExistingReservation) {
-      return res.status(400).json({
-        status: "Failed",
-        message: "A Reservation already exists for this customer",
-      });
-    }
-
     const reservation = await Reservation.create({
       resturant_id,
       booked_date,

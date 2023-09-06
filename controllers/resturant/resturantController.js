@@ -5,7 +5,7 @@ import Restuarant from "../../models/resturant/resturantModel.js";
 
 export const createResturant = async (req, res) => {
   // destructure req.body objects
-  const { resturant_name, location_id, rating, price_per_person, menu } =
+  const { resturant_name, location_id, rating, price_per_adult, price_per_child, menu } =
     req.body;
   try {
     // any req.body obj is missing
@@ -13,13 +13,14 @@ export const createResturant = async (req, res) => {
       !resturant_name ||
       !location_id ||
       !rating ||
-      !price_per_person ||
+      !price_per_adult ||
+      !price_per_child ||
       !menu
     ) {
       return res.status(400).json({
         status: "Failed",
         message:
-          "resturant name, location, rating, price_per_person and menu are required!!",
+          "resturant name, location, rating, price_per_adult, price_per_child and menu are required!!",
       });
     }
     // get location details
@@ -51,7 +52,8 @@ export const createResturant = async (req, res) => {
       resturant_name,
       location_id,
       rating,
-      price_per_person,
+      price_per_adult,
+      price_per_child,
       menu,
       location_meta,
       location_name: location.name
@@ -73,9 +75,9 @@ export const createResturant = async (req, res) => {
 
 /*------------------------------------------ edit resturant -------------------------------------------*/
 export const editResturant = async (req, res) => {
-  const { resturant_name, location_id, price_per_person, menu, id } = req.body;
+  const { resturant_name, location_id, price_per_adult, price_per_child, menu, id } = req.body;
   try {
-    if ((!resturant_name || !location_id || !price_per_person || !menu, !id)) {
+    if ((!resturant_name || !location_id || !price_per_adult || !price_per_child || !menu, !id)) {
       return res.status(400).json({
         status: "Failed",
         message: "resturant name, location, price, menu and id is required",
@@ -123,7 +125,8 @@ export const editResturant = async (req, res) => {
       {
         resturant_name,
         location_id,
-        price_per_person,
+        price_per_adult,
+        price_per_child,
         menu,
         location_meta,
       },
