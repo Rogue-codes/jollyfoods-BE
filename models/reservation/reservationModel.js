@@ -36,7 +36,15 @@ const reservationSchema = new mongoose.Schema({
         type: Number,
         required:true,
     },
+    payment_type:{
+        type: String,
+        required:true,
+    },
     payment_status:{
+        type:Boolean,
+        default:false,
+    },
+    isCompleted:{
         type:Boolean,
         default:false,
     }

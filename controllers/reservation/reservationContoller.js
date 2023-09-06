@@ -11,6 +11,7 @@ export const createReservation = async (req, res) => {
     customer_id,
     children,
     adult,
+    payment_type,
     amount,
   } = req.body;
   try {
@@ -20,6 +21,7 @@ export const createReservation = async (req, res) => {
       !booked_time ||
       !number_of_seats ||
       !customer_id ||
+      !payment_type ||
       !adult
     ) {
       return res.status(400).json({
@@ -31,6 +33,13 @@ export const createReservation = async (req, res) => {
     // if (!children) {
     //   children = 0;
     // }
+
+    if(payment_type !== "full" && payment_type !== "half"){
+      return res.status(400).json({
+        status:"Failed",
+        message:"Invalid payment type: Payment can only be full or half"
+      })
+    }
 
     const reservation_code = generateRandomUUID(10);
 
@@ -71,9 +80,10 @@ export const createReservation = async (req, res) => {
       booked_time,
       number_of_seats,
       customer_id,
-      children: 0,
+      children: !children ? 0 : children,
       adult,
       reservation_code,
+      payment_type,
       amount,
     });
 
@@ -95,3 +105,32 @@ export const createReservation = async (req, res) => {
     });
   }
 };
+
+
+// confirm reservation.
+export const checkoutReservation = async(req, res) => {
+  const { reservation_code} = req.body;
+  try {
+    const completed_reservation = await Reservation.findById(reservation_code)
+
+    if(!completed_reservation){
+      return res.status(404).json({
+        status:"Failed",
+        message: "Couldn't find reservation: Please enter a valid reservation code"
+      })
+    }
+    completed_reservation.isCompleted = true
+    await completed_reservation.save()
+
+    res.status(201).json({
+      status:"Success",
+      message:"Reservation has been checkouted successfully",
+      data: completed_reservation
+    })
+  } catch (error) {
+    res.status(500).json({
+      status:"Failed",
+      message: error.message
+    })
+  }
+}

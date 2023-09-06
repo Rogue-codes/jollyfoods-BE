@@ -199,6 +199,8 @@ export const verifyEmail = async (req, res) => {
   }
 };
 
+// user Login
+
 export const userLogin = async (req, res) => {
   const { email, password } = req.body;
 
@@ -229,7 +231,7 @@ export const userLogin = async (req, res) => {
           name: user.name,
           email: user.email,
           phoneNumber: user.phoneNumber,
-          id: user._userId,
+          id: user.id,
           isVerified: user.isVerified,
         },
         access_token,
