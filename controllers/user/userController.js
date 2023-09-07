@@ -5,8 +5,6 @@ import OTP from "../../models/otp/OtpModel.js";
 import {
   SENDMAIL,
   generateOTP,
-  sendMail,
-  // sendVerificationEmail,
 } from "../../utils/genOtpCode.js";
 export const createUser = async (req, res) => {
   const {
