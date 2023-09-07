@@ -111,7 +111,7 @@ export const SENDMAIL = async (email, code, name, callback) => {
     const options = {
       from: "nnamdidanielosuji@gmail.com", // sender address
       to: email, // receiver email
-      subject: "Send email in Node.JS with Nodemailer using Gmail account", // Subject line
+      subject: "Email Verification", // Subject line
       text: "Welcome Kpangba Food on Wheels",
       html: `<p>Hello ${formatted_name}, Thank you for signing up on <Strong>Kpangba food on wheels!</strong></p> <p>please use this token to verify your account:</p><br><h1 style="font-family: sans-serif; font-size: 58px; vertical-align: top; border-radius: 5px; text-align: center; color: #3498db;" valign="top" align="center" bgcolor="#3498db">${code}</h1>`,
     };
