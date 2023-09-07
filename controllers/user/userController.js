@@ -3,6 +3,7 @@ import { genToken } from "../../config/genToken.js";
 import OTP from "../../models/otp/OtpModel.js";
 
 import {
+  SENDMAIL,
   generateOTP,
   sendMail,
   // sendVerificationEmail,
@@ -104,7 +105,13 @@ export const createUser = async (req, res) => {
         // send email
         // sendVerificationEmail(newUser.email,otp.otp,newUser.name)
 
-        sendMail(newUser.email, digits, newUser.name);
+        // sendMail(newUser.email, digits, newUser.name);
+        SENDMAIL(newUser.email, digits, newUser.name, (info) => {
+          // The callback function to handle the result
+          console.log("Email sent:", info);
+          // You can send a response to the client indicating the email was sent
+          res.send("Email sent successfully");
+        });
 
         res.status(200).json({
           status: "success",
@@ -187,7 +194,7 @@ export const verifyEmail = async (req, res) => {
         phoneNumber: user.phoneNumber,
         id: user._id,
         isVerified: user.isVerified,
-        hmo: user.healthcareServiceProvider
+        hmo: user.healthcareServiceProvider,
       },
       access_token: jwt_token,
     });
@@ -275,53 +282,57 @@ export const getUserProfile = async (req, res) => {
   } catch (error) {}
 };
 
-export const resendToken = async(req, res) => {
-  const {user_id} = req.body;
+export const resendToken = async (req, res) => {
+  const { user_id } = req.body;
   try {
-    if(!user_id){
+    if (!user_id) {
       return res.status(400).json({
-        status:"Failed",
-        message:"User_id is required"
-      })
+        status: "Failed",
+        message: "User_id is required",
+      });
     }
 
-    const existOTP = await OTP.findOne({_userId: user_id})
-    if (existOTP){
-      await OTP.findByIdAndDelete(existOTP._id)
+    const existOTP = await OTP.findOne({ _userId: user_id });
+    if (existOTP) {
+      await OTP.findByIdAndDelete(existOTP._id);
     }
 
     const digits = generateOTP();
-        const otp = new OTP({
-          _userId: user_id,
-          otp: digits,
-        });
+    const otp = new OTP({
+      _userId: user_id,
+      otp: digits,
+    });
 
-        await otp.save();
-        // send email
-        // sendVerificationEmail(newUser.email,otp.otp,newUser.name)
+    await otp.save();
+    // send email
+    // sendVerificationEmail(newUser.email,otp.otp,newUser.name)
 
-        const newUser = await User.findById(user_id)
+    const newUser = await User.findById(user_id);
 
-        if (!newUser){
-          return res.status(404).json({
-            status: "Failed",
-            message: "User not found"
-          })
-        }
+    if (!newUser) {
+      return res.status(404).json({
+        status: "Failed",
+        message: "User not found",
+      });
+    }
 
-        sendMail(newUser.email, digits, newUser.name);
-        
-        res.status(200).json({
-          status:"Success",
-          message:"OTP Generated. Please check your email address"
-        })
-
+    // sendMail(newUser.email, digits, newUser.name);
+    SENDMAIL(newUser.email, digits, newUser.name, (info) => {
+      // The callback function to handle the result
+      console.log("Email sent:", info);
+      // You can send a response to the client indicating the email was sent
+      res.send("Email sent successfully");
+    });
+    res.status(200).json({
+      status: "Success",
+      message: "OTP Generated. Please check your email address",
+    });
   } catch (error) {
     res.status(500).json({
-      status:"Failed",
-      message:error.message
-    })
+      status: "Failed",
+      message: error.message,
+    });
   }
-}
+};
 
 // todos; forgot password, reset password, update profile.

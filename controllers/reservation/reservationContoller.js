@@ -1,7 +1,10 @@
 import Reservation from "../../models/reservation/reservationModel.js";
 import Restuarant from "../../models/resturant/resturantModel.js";
 import User from "../../models/user/UserModel.js";
-import { generateRandomUUID, sendMail, sendReservationMail } from "../../utils/genOtpCode.js";
+import {
+  SENDRESERVATIONMAIL,
+  generateRandomUUID,
+} from "../../utils/genOtpCode.js";
 export const createReservation = async (req, res) => {
   const {
     resturant_id,
@@ -34,11 +37,11 @@ export const createReservation = async (req, res) => {
     //   children = 0;
     // }
 
-    if(payment_type !== "full" && payment_type !== "half"){
+    if (payment_type !== "full" && payment_type !== "half") {
       return res.status(400).json({
-        status:"Failed",
-        message:"Invalid payment type: Payment can only be full or half"
-      })
+        status: "Failed",
+        message: "Invalid payment type: Payment can only be full or half",
+      });
     }
 
     const reservation_code = generateRandomUUID(10);
@@ -75,7 +78,24 @@ export const createReservation = async (req, res) => {
     });
 
     // send email notification to the customer.
-    sendReservationMail(Customer.email, reservation_code, Customer.name,booked_date);
+    // sendReservationMail(Customer.email, reservation_code, Customer.name,booked_date);
+
+    SENDRESERVATIONMAIL(
+      Customer.email,
+      reservation_code,
+      Customer.name,
+      booked_date,
+      adult,
+      children,
+      number_of_seats,
+      restaurant.resturant_name,
+      (info) => {
+        // The callback function to handle the result
+        console.log("Email sent:", info);
+        // You can send a response to the client indicating the email was sent
+        res.send("Email sent successfully");
+      }
+    );
 
     res.status(201).json({
       status: "success",
@@ -83,8 +103,7 @@ export const createReservation = async (req, res) => {
       data: { reservation, Customer, restaurant },
     });
 
-    console.log(req.user)
-
+    console.log(req.user);
   } catch (error) {
     res.status(500).json({
       status: "Failed",
@@ -93,31 +112,31 @@ export const createReservation = async (req, res) => {
   }
 };
 
-
 // confirm reservation.
-export const checkoutReservation = async(req, res) => {
-  const { reservation_code} = req.body;
+export const checkoutReservation = async (req, res) => {
+  const { reservation_code } = req.body;
   try {
-    const completed_reservation = await Reservation.findById(reservation_code)
+    const completed_reservation = await Reservation.findById(reservation_code);
 
-    if(!completed_reservation){
+    if (!completed_reservation) {
       return res.status(404).json({
-        status:"Failed",
-        message: "Couldn't find reservation: Please enter a valid reservation code"
-      })
+        status: "Failed",
+        message:
+          "Couldn't find reservation: Please enter a valid reservation code",
+      });
     }
-    completed_reservation.isCompleted = true
-    await completed_reservation.save()
+    completed_reservation.isCompleted = true;
+    await completed_reservation.save();
 
     res.status(201).json({
-      status:"Success",
-      message:"Reservation has been checkouted successfully",
-      data: completed_reservation
-    })
+      status: "Success",
+      message: "Reservation has been checkouted successfully",
+      data: completed_reservation,
+    });
   } catch (error) {
     res.status(500).json({
-      status:"Failed",
-      message: error.message
-    })
+      status: "Failed",
+      message: error.message,
+    });
   }
-}
+};
