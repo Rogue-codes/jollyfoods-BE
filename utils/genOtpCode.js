@@ -159,7 +159,9 @@ export const SENDRESERVATIONMAIL = async (
 <p><strong>Confirmation Code:</strong><br/><span style="color: #2B5F2B; font-size: 30px; font-weight: bold;">${code}</span></p>
 
 <p style="color: #2B5F2B; font-size: 20px; font-weight: bold;"><strong>Number of Adults:</strong> ${numberOfAdults}</p>
+${numberOfChildren > 0 && (
 <p style="color: #2B5F2B; font-size: 20px; font-weight: bold;"><strong>Number of Children:</strong> ${numberOfChildren}</p>
+)}
 <p style="color: #2B5F2B; font-size: 20px; font-weight: bold;"><strong>Number of Seats Reserved:</strong> ${numberOfSeatsReserved}</p>
 
 <p style="color: #000;">Please keep this code handy, as it will be required to validate and confirm your reservation.</p>
