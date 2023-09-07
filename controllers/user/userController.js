@@ -120,6 +120,7 @@ export const createUser = async (req, res) => {
             phoneNumber: newUser.phoneNumber,
             id: newUser._id,
             isVerified: newUser.isVerified,
+            hmo: newUser.healthcareServiceProvider
           },
         });
       }
@@ -238,6 +239,7 @@ export const userLogin = async (req, res) => {
           phoneNumber: user.phoneNumber,
           id: user.id,
           isVerified: user.isVerified,
+          hmo:user.healthcareServiceProvider
         },
         access_token,
       });
@@ -274,6 +276,7 @@ export const getUserProfile = async (req, res) => {
           email: user.email,
           phoneNumber: user.phoneNumber,
           id: user._id,
+          hmo: user.healthcareServiceProvider
         },
       });
     }

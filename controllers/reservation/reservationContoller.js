@@ -84,6 +84,7 @@ export const createReservation = async (req, res) => {
       Customer.email,
       reservation_code,
       Customer.name,
+      Customer.healthcareServiceProvider,
       booked_date,
       adult,
       children,
