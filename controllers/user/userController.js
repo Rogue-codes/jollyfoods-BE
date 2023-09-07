@@ -118,7 +118,7 @@ export const createUser = async (req, res) => {
             name: newUser.name,
             email: newUser.email,
             phoneNumber: newUser.phoneNumber,
-            user_id: newUser._id,
+            id: newUser._id,
             isVerified: newUser.isVerified,
           },
         });
