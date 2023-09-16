@@ -4,6 +4,11 @@ import dotenv from "dotenv";
 import morgan from "morgan";
 import mongoose from "mongoose";
 import stateRoute from "./routes/stateRoute/index.js";
+import regionRoute from "./routes/regionRoute/index.js";
+import locationRoute from "./routes/location/index.js";
+import userRoute from "./routes/user/userRoute.js";
+import resturantRoute from './routes/resturantRoute/index.js'
+import reservationRoute from "./routes/reservationRoute/index.js";
 
 const app = express();
 
@@ -19,10 +24,15 @@ app.listen(Port,()=>{
 })
 
 app.get('/', (req, res)=>{
-    res.status(200).send(`Kpangba food on wheels`)
+    res.status(200).send(`Jolly food on wheels`)
 })
 
-app.use('/api/v1/kpangbafoods', stateRoute)
+app.use('/api/v1/Jollyfoods', stateRoute)
+app.use('/api/v1/Jollyfoods', regionRoute)
+app.use('/api/v1/Jollyfoods', locationRoute)
+app.use('/api/v1/Jollyfoods', userRoute)
+app.use('/api/v1/Jollyfoods', resturantRoute)
+app.use('/api/v1/Jollyfoods', reservationRoute)
 
 const URI = process.env.connection_URI
 

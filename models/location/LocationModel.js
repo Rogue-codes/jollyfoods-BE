@@ -5,9 +5,17 @@ import mongoose from "mongoose";
         type: String,
         required: true
     },
-    region:{
+    region_id:{
         type: mongoose.Schema.Types.ObjectId,
         ref: "Region",
+        required: true
+    },
+    state:{
+        type:String,
+        required: true
+    },
+    region:{
+        type:String,
         required: true
     },
     address:{
