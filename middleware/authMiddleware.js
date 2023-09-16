@@ -70,7 +70,7 @@ export const authMiddleware = async (req, res, next) => {
     if (!user) {
       return res.status(403).json({
         status: "Failed",
-        message: "Unauthorized: you don't have rights to perform thid operation.",
+        message: "Unauthorized: you don't have rights to perform this operation.",
       });
     }
 
