@@ -1,5 +1,8 @@
 import crypto from "crypto";
 import nodemailer from "nodemailer";
+import dotenv from 'dotenv'
+
+dotenv.config()
 
 export const generateOTP = () => {
   let otp = "";
@@ -99,8 +102,8 @@ const transporter = nodemailer.createTransport({
   port: 587,
   secure: false,
   auth: {
-    user: "kpangbafoodsonwheels@gmail.com",
-    pass: "yiiwmxbqhvgkqhbp",
+    user: process.env.USERNAME,
+    pass: process.env.PASS,
   },
 });
 
