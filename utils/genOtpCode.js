@@ -1,10 +1,9 @@
-import sgMail from "@sendgrid/mail";
 import crypto from "crypto";
 import nodemailer from "nodemailer";
 
 export const generateOTP = () => {
   let otp = "";
-  for (let i = 0; i < 4; i++) {
+  for (let i = 0; i < 6; i++) {
     otp += Math.floor(Math.random() * 9);
   }
   return otp;
@@ -17,8 +16,8 @@ export const generateOTP = () => {
 //     to: email,
 //     from: "adaraojimba@cloudsa-africa.com",
 //     subject: "Email Verification",
-//     text: "Welcome Kpangba Food on Wheels",
-//     html: `<p>Hello ${formatted_name}, Thank you for signing up on <Strong>Kpangba food on wheels!</strong></p> <p>please use this token to verify your account:</p><br><h1 style="font-family: sans-serif; font-size: 58px; vertical-align: top; border-radius: 5px; text-align: center; color: #3498db;" valign="top" align="center" bgcolor="#3498db">${code}</h1>`,
+//     text: "Welcome Jolly Food on Wheels",
+//     html: `<p>Hello ${formatted_name}, Thank you for signing up on <Strong>Jolly food on wheels!</strong></p> <p>please use this token to verify your account:</p><br><h1 style="font-family: sans-serif; font-size: 58px; vertical-align: top; border-radius: 5px; text-align: center; color: #3498db;" valign="top" align="center" bgcolor="#3498db">${code}</h1>`,
 //   };
 //   sgMail
 //     .send(msg)
@@ -44,7 +43,7 @@ export const generateOTP = () => {
 //   sgMail.setApiKey(process.env.SENDGRID_API_KEY);
 //   const msg = {
 //     to: email,
-//     from: "admin@kpangba.com",
+//     from: "admin@jolly.com",
 //     subject: "Reservation Booking",
 //     text: "Reservation confirmed!",
 //     html: `<h2>Hello ${formatted_name},</h2>
@@ -66,7 +65,7 @@ export const generateOTP = () => {
 //     <p>Best regards,<br>
 //     Vincent Odudu<br>
 //     Manager<br>
-//     Kpangba food on wheeels</p>
+//     Jolly food on wheeels</p>
 //     `,
 //   };
 //   sgMail
@@ -112,8 +111,8 @@ export const SENDMAIL = async (email, code, name, callback) => {
       from: "nnamdidanielosuji@gmail.com", // sender address
       to: email, // receiver email
       subject: "Email Verification", // Subject line
-      text: "Welcome Kpangba Food on Wheels",
-      html: `<p>Hello ${formatted_name}, Thank you for signing up on <Strong>Kpangba food on wheels!</strong></p> <p>please use this token to verify your account:</p><br><h1 style="font-family: sans-serif; font-size: 58px; vertical-align: top; border-radius: 5px; text-align: center; color: #3498db;" valign="top" align="center" bgcolor="#3498db">${code}</h1>`,
+      text: "Welcome Jolly Food on Wheels",
+      html: `<p>Hello ${formatted_name}, Thank you for signing up on <Strong>Jolly food on wheels!</strong></p> <p>please use this token to verify your account:</p><br><h1 style="font-family: sans-serif; font-size: 58px; vertical-align: top; border-radius: 5px; text-align: center; color: #3498db;" valign="top" align="center" bgcolor="#3498db">${code}</h1>`,
     };
     const info = await transporter.sendMail(options);
     callback(info);
@@ -176,14 +175,14 @@ export const SENDRESERVATIONMAIL = async (
 
 <p style="color: #000;">We value your trust in our services and are eagerly looking forward to hosting you on the specified date. Our team is committed to making your experience memorable.</p>
 
-<p style="color: #000;">If you have any questions or need further assistance, please don't hesitate to reach out to our support team at <a href="mailto:admin@kpangba.com">admin@kpangba.com</a> or call us at <a href="tel:+1234567890">+123-456-7890</a>.</p>
+<p style="color: #000;">If you have any questions or need further assistance, please don't hesitate to reach out to our support team at <a href="mailto:admin@jolly.com">admin@jolly.com</a> or call us at <a href="tel:+1234567890">+123-456-7890</a>.</p>
 
 <p style="color: #000;">Thank you for choosing us for your reservation. We can't wait to serve you!</p>
 
 <p style="color: #000;">Best regards,<br>
 Vincent Odudu<br>
 Manager<br>
-Kpangba food on wheels</p>
+Jolly food on wheels</p>
 
     `,
     };

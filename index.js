@@ -24,15 +24,15 @@ app.listen(Port,()=>{
 })
 
 app.get('/', (req, res)=>{
-    res.status(200).send(`Kpangba food on wheels`)
+    res.status(200).send(`Jolly food on wheels`)
 })
 
-app.use('/api/v1/kpangbafoods', stateRoute)
-app.use('/api/v1/kpangbafoods', regionRoute)
-app.use('/api/v1/kpangbafoods', locationRoute)
-app.use('/api/v1/kpangbafoods', userRoute)
-app.use('/api/v1/kpangbafoods', resturantRoute)
-app.use('/api/v1/kpangbafoods', reservationRoute)
+app.use('/api/v1/Jollyfoods', stateRoute)
+app.use('/api/v1/Jollyfoods', regionRoute)
+app.use('/api/v1/Jollyfoods', locationRoute)
+app.use('/api/v1/Jollyfoods', userRoute)
+app.use('/api/v1/Jollyfoods', resturantRoute)
+app.use('/api/v1/Jollyfoods', reservationRoute)
 
 const URI = process.env.connection_URI
 
