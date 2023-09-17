@@ -27,9 +27,11 @@ export const paystackPayment = async (req, res) => {
       }
     );
 
-    res.redirect(response.data.data.authorization_url);
-  } catch (error) {
-    console.error(error);
-    res.status(500).send("Payment initiation failed");
+
+    // Return the Paystack payment response to the client
+    res.json(response.data);  } catch (error) {
+    console.error('Error initiating payment:', error);
+    res.status(500).json({ success: false, error: 'Payment initiation failed' });
   }
 };
+
